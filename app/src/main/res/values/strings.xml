@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Spotify Ad Skipper</string>
+    
+    <!-- Setup instructions -->
+    <string name="setup_instructions">Complete the following steps to enable automatic ad skipping:</string>
+    
+    <!-- Permission labels -->
+    <string name="notification_access_label">Notification Access</string>
+    <string name="shizuku_permission_label">Shizuku Permission</string>
+    <string name="battery_optimization_label">Battery Optimization</string>
+    
+    <!-- Button text -->
+    <string name="grant_notification_access">Grant Notification Access</string>
+    <string name="grant_shizuku_permission">Grant Shizuku Permission</string>
+    <string name="disable_battery_optimization">Disable Battery Optimization</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="request_permission">Request Permission</string>
+    
+    <!-- Status messages -->
+    <string name="status_granted">Granted</string>
+    <string name="status_not_granted">Not Granted</string>
+    <string name="status_required">Required</string>
+    <string name="status_complete">All permissions granted! Ad skipping is active.</string>
+    <string name="status_incomplete">Please grant all required permissions to enable ad skipping.</string>
+    <string name="shizuku_status_checking">Checking Shizuku status…</string>
+    
+    <!-- Content descriptions for accessibility -->
+    <string name="notification_status_icon">Notification access status icon</string>
+    <string name="shizuku_status_icon">Shizuku permission status icon</string>
+    <string name="battery_status_icon">Battery optimization status icon</string>
+    
+    <!-- Guidance messages -->
+    <string name="notification_access_description">Allow this app to read Spotify notifications to detect advertisements</string>
+    <string name="shizuku_permission_description">Grant Shizuku permission to enable reliable ad skipping</string>
+    <string name="battery_optimization_description">Disable battery optimization to keep the service running</string>
+    
+    <!-- Shizuku status messages -->
+    <string name="shizuku_not_installed">Shizuku app is not installed. Please install it first.</string>
+    <string name="shizuku_not_running">Shizuku service is not running. Please start Shizuku app.</string>
+    <string name="shizuku_running_not_granted">Shizuku is running. Please grant permission.</string>
+    <string name="shizuku_running_and_granted">Shizuku permission granted</string>
+    
+    <!-- Setup complete -->
+    <string name="setup_complete">All permissions granted! Ad skipping is now active.</string>
+    <string name="setup_incomplete">Please grant all required permissions to enable ad skipping.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#1DB954</color>
+    <color name="status_granted">#4CAF50</color>
+    <color name="status_not_granted">#F44336</color>
+</resources>
