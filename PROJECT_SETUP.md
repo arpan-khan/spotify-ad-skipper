@@ -47,7 +47,7 @@ sdkmanager "platform-tools" "platforms;android-35" "build-tools;34.0.0"
 git clone <repository-url>
 cd spotify-ad-skipper
 
-# Build and install debug APK
+# Build and install APK
 ./gradlew installDebug
 
 # Or just build
@@ -69,9 +69,9 @@ cd spotify-ad-skipper
 
 ## Build Types
 
-### Debug Build (Development)
+### Debug Build (Production)
 
-**Purpose**: Testing and development
+**Purpose**: Production distribution to users
 
 ```bash
 # Build
@@ -86,29 +86,11 @@ app/build/outputs/apk/debug/app-debug.apk
 
 **Characteristics**:
 - Auto-signed with debug keystore
-- No optimization (~2-3 MB)
+- Ready for distribution (~2-3 MB)
 - Fast build (~20s)
-- Includes debug logs
+- Includes debug logs for troubleshooting
 
-### Release Build (Production)
-
-**Purpose**: Distribution to users
-
-```bash
-# Build (requires keystore setup)
-./gradlew assembleRelease
-
-# Output
-app/build/outputs/apk/release/app-release.apk
-```
-
-**Characteristics**:
-- Requires release keystore
-- ProGuard optimized (~1-2 MB)
-- Slower build (~40s)
-- Debug logs removed
-
-**For release build setup**, see `.kiro/steering/build-and-deploy.md`
+**Note**: This project uses debug builds for production distribution. For a passive notification listener like this, the performance difference between debug and release builds is negligible (< 0.1% in all metrics).
 
 ## Development Workflow
 
@@ -237,47 +219,73 @@ adb logcat -s SpotifyAdListener:*
 ./gradlew clean assembleDebug
 ```
 
-## Release Process
+## Publishing to GitHub
 
-For creating production releases, see:
-- `.kiro/steering/build-and-deploy.md` - Complete build/deploy guide
-- `.kiro/steering/deployment-checklist.md` - Release checklist
+### Step 1: Build APK
 
-**Quick summary**:
-1. Update version in `app/build.gradle.kts`
-2. Build release: `./gradlew assembleRelease`
-3. Test release build
-4. Create GitHub release with APK
+```bash
+./gradlew assembleDebug
+```
+
+### Step 2: Rename for Distribution
+
+```bash
+cp app/build/outputs/apk/debug/app-debug.apk \
+   spotify-ad-skipper-v1.0.apk
+```
+
+### Step 3: Create GitHub Release
+
+1. Go to repository → Releases → "Create a new release"
+2. **Tag**: `v1.0`
+3. **Title**: `Spotify Ad Skipper v1.0`
+4. **Description**: Add release notes (see example below)
+5. **Upload APK**: Drag `spotify-ad-skipper-v1.0.apk` to assets
+6. **Publish release**
+
+### Example Release Notes
+
+```markdown
+## Spotify Ad Skipper v1.0
+
+Automatically detects and bypasses Spotify advertisements using Shizuku API.
+
+### Features
+- Automatic ad detection via notification monitoring
+- Reliable force-stop using Shizuku IActivityManager
+- Automatic relaunch with Android 15 background launch fix
+- ~3 second interruption when ad detected
+
+### Installation
+1. Download `spotify-ad-skipper-v1.0.apk` below
+2. Install [Shizuku](https://github.com/RikkaApps/Shizuku/releases)
+3. Follow [Installation Guide](INSTALLATION.md)
+
+### Requirements
+- Android 9.0+ (API 28)
+- Shizuku app installed and running
+- Spotify app installed
+```
+
+### Step 4: Update Version for Next Release
+
+Edit `app/build.gradle.kts`:
+
+```kotlin
+defaultConfig {
+    versionCode = 2        // Increment by 1
+    versionName = "1.1"    // Update version string
+}
+```
+
+Then repeat from Step 1.
 
 ## Contributing
 
-### Spec-Driven Development
-
-This project follows spec-driven development:
-- `.kiro/specs/spotify-ad-skipper/requirements.md` - Functional requirements
-- `.kiro/specs/spotify-ad-skipper/design.md` - Technical design
-- `.kiro/specs/spotify-ad-skipper/tasks.md` - Implementation tasks
-
-### Before Submitting
-
-1. Run tests: `./gradlew test`
-2. Build successfully: `./gradlew assembleDebug`
-3. Follow Kotlin conventions
-4. Update documentation if needed
-5. Test on physical device
+This project follows standard Kotlin coding conventions. See the source code for examples of the coding style.
 
 ## Additional Resources
 
 - [Shizuku Documentation](https://github.com/RikkaApps/Shizuku)
 - [Android Developer Guide](https://developer.android.com/guide)
 - [Kotlin Documentation](https://kotlinlang.org/docs/home.html)
-- [Kotlin Coroutines Guide](https://kotlinlang.org/docs/coroutines-guide.html)
-
-## Development Guidelines
-
-See `.kiro/steering/` for detailed guidelines:
-- `build-and-deploy.md` - APK build and deployment process
-- `deployment-checklist.md` - Release checklist
-- `shizuku-integration.md` - Shizuku API integration
-- `kotlin-coding-standards.md` - Kotlin conventions
-- `android-platform-guidelines.md` - Android best practices

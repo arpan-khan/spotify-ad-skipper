@@ -37,6 +37,12 @@ class SpotifyAdListener : NotificationListenerService() {
         // Extract notification
         val notification = sbn.notification ?: return
         
+        // DEBUG: Log all notification details
+        val title = notification.extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
+        val text = notification.extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+        val ticker = notification.tickerText?.toString()
+        Log.d(TAG, "Spotify notification - Title: '$title', Text: '$text', Ticker: '$ticker'")
+        
         // Check if this is an advertisement
         if (isAdvertisement(notification)) {
             Log.d(TAG, "Advertisement detected, executing skip sequence")
@@ -65,18 +71,49 @@ class SpotifyAdListener : NotificationListenerService() {
     /**
      * Checks if a notification is an advertisement.
      * 
-     * Extracts the notification title and checks if it exactly matches "Advertisement".
-     * Handles null extras and missing EXTRA_TITLE gracefully.
+     * Checks multiple fields to ensure no ads slip through:
+     * - Ticker text (most reliable indicator)
+     * - Title field
+     * - Text/description field
+     * - Sub-text field
      * 
      * @param notification The notification to check
-     * @return true if the notification title equals "Advertisement", false otherwise
+     * @return true if the notification is an advertisement, false otherwise
      */
     private fun isAdvertisement(notification: Notification): Boolean {
-        val title = notification.extras
-            ?.getCharSequence(Notification.EXTRA_TITLE)
-            ?.toString()
+        val extras = notification.extras ?: return false
         
-        return title == AD_TITLE_KEYWORD
+        // Check ticker text (most reliable)
+        val ticker = notification.tickerText?.toString()
+        if (ticker?.contains(AD_TITLE_KEYWORD, ignoreCase = true) == true) {
+            return true
+        }
+        
+        // Check title
+        val title = extras.getCharSequence(Notification.EXTRA_TITLE)?.toString()
+        if (title?.contains(AD_TITLE_KEYWORD, ignoreCase = true) == true) {
+            return true
+        }
+        
+        // Check text/description
+        val text = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+        if (text?.contains(AD_TITLE_KEYWORD, ignoreCase = true) == true) {
+            return true
+        }
+        
+        // Check sub-text
+        val subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT)?.toString()
+        if (subText?.contains(AD_TITLE_KEYWORD, ignoreCase = true) == true) {
+            return true
+        }
+        
+        // Check info text
+        val infoText = extras.getCharSequence(Notification.EXTRA_INFO_TEXT)?.toString()
+        if (infoText?.contains(AD_TITLE_KEYWORD, ignoreCase = true) == true) {
+            return true
+        }
+        
+        return false
     }
     
     /**

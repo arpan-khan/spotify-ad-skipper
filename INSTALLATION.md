@@ -19,14 +19,14 @@ Complete installation in ~10 minutes.
 2. Settings → Developer Options → Wireless Debugging → ON
 3. Open Shizuku app → Tap "Pair"
 4. Follow pairing instructions
-5. Service starts automatically ✓
+5. Service starts automatically
 
 ### Option B: USB ADB (Requires Computer)
 1. Settings → Developer Options → USB Debugging → ON
 2. Connect device to computer via USB
 3. On computer: `adb devices`
 4. Accept "Allow USB debugging" on device
-5. Open Shizuku app - service starts automatically ✓
+5. Open Shizuku app - service starts automatically
 
 ## Step 2: Install Spotify Ad Skipper (1 min)
 
@@ -44,13 +44,13 @@ adb install spotify-ad-skipper-v1.0.apk
 
 Launch the app and follow the checklist:
 
-### ✓ Notification Access
+### Notification Access
 Tap button → Enable in settings → Return to app
 
-### ✓ Shizuku Permission
+### Shizuku Permission
 Tap button → Allow in dialog → Done
 
-### ✓ Battery Optimization
+### Battery Optimization
 Tap button → Select "Don't optimize" → Return to app
 
 ## Step 4: Samsung Devices Only (1 min)
@@ -65,10 +65,17 @@ Settings → Apps → Spotify Ad Skipper → Battery
 
 ## Testing (2 min)
 
-1. **Verify**: All three checkmarks are green ✓
+1. **Verify**: All three checkmarks are green
 2. **Test**: Open Spotify and play music
 3. **Wait**: For an ad to play
-4. **Confirm**: Ad is skipped within 3-4 seconds
+4. **Observe**: 
+   - Ad plays for ~2 seconds
+   - Spotify closes (screen goes black)
+   - Spotify reopens (~1 second)
+   - Music resumes on next track (~2 seconds)
+   - Total interruption: ~3 seconds
+
+**Expected Behavior**: Spotify will visibly close and reopen. This is NOT like Spotify Premium - there will be a brief interruption.
 
 ## Troubleshooting
 

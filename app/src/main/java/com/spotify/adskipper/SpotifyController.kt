@@ -36,21 +36,33 @@ object SpotifyController {
     /**
      * Relaunches the Spotify application.
      * 
-     * Queries PackageManager for Spotify's launch intent and starts the activity
-     * with FLAG_ACTIVITY_NEW_TASK to comply with Android 15 background launch restrictions.
+     * Uses Shizuku-based activity launch to bypass Android 15 background activity launch restrictions.
+     * Falls back to standard startActivity() if Shizuku is unavailable (may fail on Android 15).
      * 
      * @param context Android context for intent operations
      * @return Result.Success if launched, Result.Error if failed
      */
     fun relaunchSpotify(context: Context): Result<Unit> {
         return try {
-            val intent = context.packageManager.getLaunchIntentForPackage(SPOTIFY_PACKAGE)
-                ?: return Result.Error(IllegalStateException("Spotify not installed"))
-            
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-            Log.d(TAG, "Spotify relaunched successfully")
-            Result.Success(Unit)
+            // Try Shizuku-based launch first (bypasses Android 15 restrictions)
+            when (val result = ShizukuController.launchActivity(SPOTIFY_PACKAGE, context)) {
+                is Result.Success -> {
+                    Log.d(TAG, "Spotify relaunched via Shizuku")
+                    Result.Success(Unit)
+                }
+                is Result.Error -> {
+                    // Fall back to standard launch (may fail on Android 15 from background)
+                    Log.w(TAG, "Shizuku launch failed, trying standard launch", result.exception)
+                    
+                    val intent = context.packageManager.getLaunchIntentForPackage(SPOTIFY_PACKAGE)
+                        ?: return Result.Error(IllegalStateException("Spotify not installed"))
+                    
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                    Log.d(TAG, "Spotify relaunched via standard launch")
+                    Result.Success(Unit)
+                }
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to relaunch Spotify", e)
             Result.Error(e)
