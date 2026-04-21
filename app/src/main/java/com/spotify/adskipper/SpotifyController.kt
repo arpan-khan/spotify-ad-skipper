@@ -16,7 +16,6 @@ object SpotifyController {
     
     private const val TAG = "SpotifyController"
     private const val SPOTIFY_PACKAGE = "com.spotify.music"
-    private const val SPOTIFY_NEXT_ACTION = "com.spotify.mobile.android.ui.widget.NEXT"
     
     /**
      * Checks if Spotify is installed on the device.
@@ -70,24 +69,39 @@ object SpotifyController {
     }
     
     /**
-     * Sends skip to next track intent to Spotify.
+     * Sends play intent to Spotify using media button simulation.
      * 
-     * Broadcasts the NEXT action intent scoped to the Spotify package to skip
-     * to the next track in the playback queue.
+     * Uses ACTION_MEDIA_BUTTON to simulate pressing a headset play button,
+     * which is the most reliable way to trigger playback on Android 15.
      * 
      * @param context Android context for broadcast operations
      * @return Result.Success if sent, Result.Error if failed
      */
-    fun skipToNext(context: Context): Result<Unit> {
+    fun play(context: Context): Result<Unit> {
         return try {
-            val intent = Intent(SPOTIFY_NEXT_ACTION).apply {
+            // Send media button event (simulates headset play button)
+            val keyDownIntent = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
+                putExtra(Intent.EXTRA_KEY_EVENT, android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY
+                ))
                 setPackage(SPOTIFY_PACKAGE)
             }
-            context.sendBroadcast(intent)
-            Log.d(TAG, "Skip intent sent successfully")
+            context.sendBroadcast(keyDownIntent)
+            
+            val keyUpIntent = Intent(Intent.ACTION_MEDIA_BUTTON).apply {
+                putExtra(Intent.EXTRA_KEY_EVENT, android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_UP,
+                    android.view.KeyEvent.KEYCODE_MEDIA_PLAY
+                ))
+                setPackage(SPOTIFY_PACKAGE)
+            }
+            context.sendBroadcast(keyUpIntent)
+            
+            Log.d(TAG, "Media button play intent sent")
             Result.Success(Unit)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to send skip intent", e)
+            Log.e(TAG, "Failed to send play intent", e)
             Result.Error(e)
         }
     }

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  * 
  * This service passively listens for Spotify notifications, detects advertisements
  * by checking the notification title, and executes an asynchronous sequence to
- * force-stop, relaunch, and skip to the next track.
+ * force-stop and relaunch Spotify. Playback resumes naturally after relaunch.
  */
 class SpotifyAdListener : NotificationListenerService() {
     
@@ -29,6 +29,10 @@ class SpotifyAdListener : NotificationListenerService() {
     
     // Coroutine scope with SupervisorJob to prevent child failures from cancelling the scope
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    
+    // Flag to prevent concurrent ad skip sequences
+    @Volatile
+    private var isAdSkipInProgress = false
     
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         // Filter for Spotify notifications only (most efficient check first)
@@ -45,6 +49,12 @@ class SpotifyAdListener : NotificationListenerService() {
         
         // Check if this is an advertisement
         if (isAdvertisement(notification)) {
+            // Prevent concurrent ad skip sequences
+            if (isAdSkipInProgress) {
+                Log.d(TAG, "Ad skip already in progress, skipping duplicate")
+                return
+            }
+            
             Log.d(TAG, "Advertisement detected, executing skip sequence")
             
             // Execute ad skip sequence asynchronously (DO NOT block main thread)
@@ -120,47 +130,73 @@ class SpotifyAdListener : NotificationListenerService() {
      * Executes the ad skip sequence asynchronously.
      * 
      * Sequence:
-     * 1. Force-stop Spotify via Shizuku
-     * 2. Wait 1000ms for process termination
-     * 3. Relaunch Spotify
-     * 4. Wait 2000ms for Spotify to initialize
-     * 5. Send skip to next track intent
+     * 1. Wait for Spotify to update queue state (ad must start playing first)
+     * 2. Send Spotify to background (triggers onPause)
+     * 3. Wait for lifecycle callbacks (onPause → onStop)
+     * 4. Finish and remove task (emulates swipe to close, triggers onDestroy)
+     * 5. Wait for process termination
+     * 6. Relaunch Spotify
+     * 7. Wait for Spotify to initialize
+     * 8. Send play intent
      * 
-     * The sequence terminates early if force-stop or relaunch fails.
-     * Skip failures are logged but don't prevent sequence completion.
+     * The sequence terminates early if finish or relaunch fails.
      */
     private suspend fun executeAdSkipSequence() {
-        // Step 1: Force stop Spotify
-        when (val result = ShizukuController.forceStopSpotify()) {
-            is Result.Error -> {
-                Log.e(TAG, "Force stop failed", result.exception)
-                return // Terminate sequence early
+        isAdSkipInProgress = true
+        
+        try {
+            // Step 1: Wait for Spotify to update queue state after ad starts
+            // This delay is critical - without it, Spotify resumes at the wrong track
+            Log.d(TAG, "Waiting for Spotify to update queue state...")
+            delay(2500)
+            
+            // Step 2: Send Spotify to background (triggers onPause)
+            Log.d(TAG, "Sending Spotify to background...")
+            val backgroundIntent = android.content.Intent(android.content.Intent.ACTION_MAIN).apply {
+                addCategory(android.content.Intent.CATEGORY_HOME)
+                addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
             }
-            is Result.Success -> Log.d(TAG, "Spotify stopped")
-        }
-        
-        // Step 2: Wait for process termination to complete
-        delay(1000)
-        
-        // Step 3: Relaunch Spotify
-        when (val result = SpotifyController.relaunchSpotify(applicationContext)) {
-            is Result.Error -> {
-                Log.e(TAG, "Relaunch failed", result.exception)
-                return // Terminate sequence early
+            startActivity(backgroundIntent)
+            
+            // Step 3: Wait for lifecycle callbacks (onPause → onStop)
+            delay(1000)
+            
+            // Step 4: Finish and remove task (emulates swipe to close)
+            when (val result = ShizukuController.finishAndRemoveSpotifyTask(applicationContext)) {
+                is Result.Error -> {
+                    Log.e(TAG, "Finish and remove task failed", result.exception)
+                    return
+                }
+                is Result.Success -> Log.d(TAG, "Spotify task finished and removed")
             }
-            is Result.Success -> Log.d(TAG, "Spotify relaunched")
+            
+            // Step 5: Wait for process termination
+            delay(1000)
+            
+            // Step 6: Relaunch Spotify
+            when (val result = SpotifyController.relaunchSpotify(applicationContext)) {
+                is Result.Error -> {
+                    Log.e(TAG, "Relaunch failed", result.exception)
+                    return
+                }
+                is Result.Success -> Log.d(TAG, "Spotify relaunched")
+            }
+            
+            // Step 7: Wait for Spotify to initialize
+            delay(3000)
+            
+            // Step 8: Send play intent
+            Log.d(TAG, "Sending play intent...")
+            when (val result = SpotifyController.play(applicationContext)) {
+                is Result.Error -> Log.e(TAG, "Play intent failed", result.exception)
+                is Result.Success -> Log.d(TAG, "Play intent sent")
+            }
+            
+            Log.d(TAG, "Ad skip sequence complete")
+        } finally {
+            isAdSkipInProgress = false
+            Log.d(TAG, "Ad skip flag reset, ready for next ad")
         }
-        
-        // Step 4: Wait for Spotify to initialize and load state
-        delay(2000)
-        
-        // Step 5: Send skip to next track intent
-        when (val result = SpotifyController.skipToNext(applicationContext)) {
-            is Result.Error -> Log.e(TAG, "Skip failed", result.exception)
-            is Result.Success -> Log.d(TAG, "Track skipped successfully")
-        }
-        
-        // Sequence complete - service remains active for next advertisement
     }
     
     override fun onDestroy() {

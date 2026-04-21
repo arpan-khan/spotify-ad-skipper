@@ -5,7 +5,8 @@ package com.spotify.adskipper
  * 
  * @property forceStopDelayMs Delay in milliseconds between force-stop and relaunch operations.
  *                            Must be between 500ms and 3000ms inclusive.
- * @property skipDelayMs Delay in milliseconds between relaunch and skip operations.
+ * @property skipDelayMs Delay in milliseconds for Spotify initialization after relaunch.
+ *                       Reserved for future use. Currently used as initialization delay.
  *                       Must be between 1000ms and 5000ms inclusive.
  * @property spotifyPackageName The package name of the Spotify application.
  * @property adTitleKeyword The notification title keyword that identifies advertisements.

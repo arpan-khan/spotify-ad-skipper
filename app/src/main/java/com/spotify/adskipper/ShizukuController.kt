@@ -11,21 +11,16 @@ import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.SystemServiceHelper
 
 /**
- * Singleton wrapper around the Shizuku API for privileged process management operations.
- * Uses Shizuku's Remote Binder Call approach with reflection to access IActivityManager APIs.
+ * Singleton for privileged process management operations.
  * 
  * This controller provides:
- * 1. Reliable, invisible, and instant process termination using IActivityManager.forceStopPackage()
- * 2. Background activity launching using IActivityManager.startActivity() with elevated privileges
- * 
- * Both operations use Shizuku's privileged API access via ShizukuBinderWrapper and reflection
- * to access hidden Android APIs, bypassing Android 15 background activity launch restrictions
- * and avoiding the limitations of Accessibility Services.
+ * 1. Activity launch via Shizuku (bypasses Android 15 background restrictions)
+ * 2. App close via finishAndRemoveTask() (emulates swipe to close)
+ * 3. Force stop as fallback (via Shizuku reflection)
  * 
  * Implementation follows Shizuku best practices:
  * - Uses ShizukuBinderWrapper for binder forwarding
  * - Calls IActivityManager methods via reflection
- * - No reliance on deprecated newProcess() method
  * - No custom android.jar required (uses reflection)
  */
 object ShizukuController {
@@ -63,10 +58,69 @@ object ShizukuController {
     }
     
     /**
+     * Closes Spotify by finishing all its activities and removing from recent apps.
+     * 
+     * This emulates the manual "swipe to close" behavior from recent apps by using
+     * ActivityManager.getAppTasks() and finishAndRemoveTask(). This triggers the
+     * normal app lifecycle: onPause → onStop → onDestroy, giving Spotify time to
+     * save its queue state before termination.
+     * 
+     * @param context Android context for accessing ActivityManager
+     * @return Result.Success if task finished, Result.Error if failed
+     */
+    fun finishAndRemoveSpotifyTask(context: Context): Result<Unit> {
+        // Precondition checks
+        if (!isShizukuAvailable()) {
+            return Result.Error(IllegalStateException("Shizuku service not available"))
+        }
+        
+        if (!checkShizukuPermission()) {
+            return Result.Error(SecurityException("Shizuku permission not granted"))
+        }
+        
+        return try {
+            // Get ActivityManager
+            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
+            
+            // Get all app tasks
+            val appTasks = activityManager.appTasks
+            
+            // Find Spotify's task
+            var spotifyTaskFound = false
+            for (appTask in appTasks) {
+                val taskInfo = appTask.taskInfo
+                if (taskInfo.baseActivity?.packageName == SPOTIFY_PACKAGE) {
+                    Log.d(TAG, "Found Spotify task, calling finishAndRemoveTask()")
+                    appTask.finishAndRemoveTask()
+                    spotifyTaskFound = true
+                    break
+                }
+            }
+            
+            if (spotifyTaskFound) {
+                Log.d(TAG, "Successfully finished Spotify task via finishAndRemoveTask()")
+                Result.Success(Unit)
+            } else {
+                Log.w(TAG, "No Spotify task found in app tasks, falling back to forceStop")
+                forceStopSpotify()
+            }
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Security exception during finishAndRemoveTask", e)
+            Result.Error(e)
+        } catch (e: Exception) {
+            Log.e(TAG, "Exception during finishAndRemoveTask", e)
+            Result.Error(e)
+        }
+    }
+    
+    /**
      * Forces Spotify to stop using Shizuku API via IActivityManager.
      * 
      * Uses Shizuku's Remote Binder Call approach with reflection to directly invoke
      * IActivityManager.forceStopPackage() with elevated privileges.
+     * 
+     * Note: This method kills the process instantly WITHOUT lifecycle callbacks.
+     * Use finishAndRemoveSpotifyTask() instead to preserve Spotify's queue state.
      * 
      * @return Result.Success if process terminated, Result.Error if failed
      */

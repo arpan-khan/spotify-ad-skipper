@@ -69,11 +69,11 @@ Settings → Apps → Spotify Ad Skipper → Battery
 2. **Test**: Open Spotify and play music
 3. **Wait**: For an ad to play
 4. **Observe**: 
-   - Ad plays for ~2 seconds
+   - Ad plays for ~2.5 seconds
    - Spotify closes (screen goes black)
-   - Spotify reopens (~1 second)
-   - Music resumes on next track (~2 seconds)
-   - Total interruption: ~3 seconds
+   - Spotify reopens (~3 seconds)
+   - Music resumes on next track (~3 seconds)
+   - Total interruption: ~8.5 seconds
 
 **Expected Behavior**: Spotify will visibly close and reopen. This is NOT like Spotify Premium - there will be a brief interruption.
 
