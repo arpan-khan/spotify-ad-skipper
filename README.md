@@ -16,24 +16,6 @@ Spotify Ad Skipper monitors Spotify notifications in the background. When an adv
 - **Privacy Focused**: No data collection, storage, or transmission
 - **Samsung Optimized**: Tested on Samsung One UI 7.0
 
-## How It Works
-
-```
-1. Detection    → Monitor Spotify notifications for "Advertisement"
-2. Wait         → 2500ms for Spotify to update queue state
-3. Background   → Send Spotify to background (triggers onPause)
-4. Wait         → 1000ms for lifecycle callbacks (onPause → onStop)
-5. Close        → finishAndRemoveTask() (emulates swipe to close)
-6. Wait         → 1000ms for process termination
-7. Relaunch     → Launch Spotify via Shizuku with elevated privileges
-8. Wait         → 3000ms for Spotify initialization
-9. Play         → Send media button play intent
-```
-
-**Total time**: ~8.5 seconds
-
-**Note**: This is NOT like Spotify Premium. The app will visibly close and reopen when an ad is detected.
-
 ## Requirements
 
 - **Android 9.0 (API 28)** or higher
@@ -76,43 +58,6 @@ See [PROJECT_SETUP.md](PROJECT_SETUP.md) for build instructions.
 ./gradlew assembleDebug
 # Output: app/build/outputs/apk/debug/app-debug.apk
 ```
-
-## Architecture
-
-### Components
-- **MainActivity**: Permission management UI with checklist interface
-- **ShizukuController**: Activity launch (Shizuku), finishAndRemoveTask (standard API), forceStop (fallback)
-- **SpotifyController**: Spotify lifecycle management (relaunch + play intent)
-- **SpotifyAdListener**: NotificationListenerService for passive ad detection
-
-### Key Implementation Details
-- **Android 15 Background Launch Fix**: Uses Shizuku's IActivityManager.startActivityAsUser() to bypass restrictions
-- **Manual Close Emulation**: Uses finishAndRemoveTask() to trigger lifecycle callbacks (onPause → onStop → onDestroy)
-- **Hidden API Bypass**: AndroidHiddenApiBypass library exempts IActivityManager from runtime restrictions
-- **Calling Package**: Uses "com.android.shell" as callingPackage to match Shizuku's uid=2000
-
-### Technologies
-- **Kotlin 2.1.0**: Primary programming language
-- **Shizuku API 13.1.5**: Privileged process management
-- **Kotlin Coroutines**: Async ad skip sequence execution
-- **AndroidX**: Modern Android framework components
-
-## Security & Privacy
-
-- **No Data Collection**: The app does not collect, store, or transmit any user data
-- **Minimal Permissions**: Only requests essential permissions for functionality
-- **Scoped Operations**: All operations are scoped to Spotify package only
-- **No Network Access**: No internet permission requested or used
-- **Open Source**: Code is available for review and audit
-
-## Limitations
-
-- **Visible Interruption**: Spotify will close and reopen when an ad is detected (~8.5 seconds total)
-- **Detection Delay**: Ads play for ~2.5 seconds before the skip sequence starts
-- **Not Like Premium**: This is not seamless ad-free listening
-- **Spotify Only**: Only works with official Spotify app (com.spotify.music)
-- **Requires Shizuku**: Shizuku must be installed and running (for relaunch from background)
-- **Android 9.0+**: Does not support older Android versions
 
 ## Documentation
 
@@ -158,9 +103,7 @@ This project is provided as-is for educational purposes. Use at your own risk.
 
 ## Disclaimer
 
-This application is not affiliated with, endorsed by, or connected to Spotify AB or Shizuku. All trademarks are the property of their respective owners.
-
-**Legal Notice**: This app modifies the normal operation of the Spotify application. Use may violate Spotify's Terms of Service. The developers assume no liability for any consequences of using this software.
+This application is not affiliated with, endorsed by, or connected to Spotify AB or Shizuku. All trademarks are the property of their respective owners. The developers assume no liability for any consequences of using this software.
 
 ## Acknowledgments
 
