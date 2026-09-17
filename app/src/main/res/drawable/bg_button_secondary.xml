@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/spotify_green_glow">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/bg_card_highlight" />
+            <corners android:radius="100dp" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/bg_card_border" />
+        </shape>
+    </item>
+</ripple>

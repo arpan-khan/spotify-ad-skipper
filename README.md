@@ -1,3 +1,26 @@
+> **Disclaimer**: This project is an independent fork of the original [sihooney/spotify-ad-skipper](https://github.com/sihooney/spotify-ad-skipper) with custom enhancements and fixes. This project is provided as-is without any promise of future updates or ongoing maintenance.
+
+---
+
+### What's Changed in This Fork
+
+#### Behavior fix
+- **No longer kicks you to the home screen** when it skips an ad — it kills/relaunches Spotify silently in the background and snaps focus back to whatever app you were actually in (game, browser, etc.), using Shizuku to capture and restore the foreground task.
+- **Removed the unnecessary "send Spotify home" step** before killing it — wasn't needed.
+
+#### New feature: on/off toggle
+- **A master switch** inside the app to turn ad-skipping on/off without revoking permissions.
+- **State is saved** (`SharedPreferences`) and persists across app restarts.
+- **When off**, the notification listener ignores ads entirely.
+- **Toggle is disabled** until Notification + Shizuku permissions are actually granted, so it can't show "on" when it can't work.
+
+#### UI overhaul
+- **Full redesign** from the plain permission-checklist screen to a modern dark, Spotify-themed UI: hero status banner, pill-style status badges, rounded cards, custom icons, ripple buttons.
+- **Smarter Shizuku button** — now context-aware (Install / Open / Grant, depending on actual Shizuku state) instead of one static button.
+- **Original functionality** (grant notification access, grant Shizuku, battery optimization exemption) all preserved underneath the new visuals.
+
+---
+
 # Spotify Ad Skipper
 
 A native Android application that automatically detects and bypasses Spotify advertisements using Shizuku API.

@@ -8,7 +8,7 @@ class AdSkipConfigTest {
     @Test
     fun `default configuration has valid timing parameters`() {
         val config = AdSkipConfig()
-        
+
         assertEquals(1000L, config.forceStopDelayMs)
         assertEquals(2000L, config.skipDelayMs)
         assertEquals("com.spotify.music", config.spotifyPackageName)
@@ -99,7 +99,7 @@ class AdSkipConfigTest {
             spotifyPackageName = "com.custom.package",
             adTitleKeyword = "CustomAd"
         )
-        
+
         assertEquals(1500L, config.forceStopDelayMs)
         assertEquals(2500L, config.skipDelayMs)
         assertEquals("com.custom.package", config.spotifyPackageName)

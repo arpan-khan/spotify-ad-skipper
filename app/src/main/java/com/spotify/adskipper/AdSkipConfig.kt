@@ -1,18 +1,5 @@
 package com.spotify.adskipper
 
-/**
- * Configuration data class for ad skip sequence timing parameters.
- * 
- * @property forceStopDelayMs Delay in milliseconds between force-stop and relaunch operations.
- *                            Must be between 500ms and 3000ms inclusive.
- * @property skipDelayMs Delay in milliseconds for Spotify initialization after relaunch.
- *                       Reserved for future use. Currently used as initialization delay.
- *                       Must be between 1000ms and 5000ms inclusive.
- * @property spotifyPackageName The package name of the Spotify application.
- * @property adTitleKeyword The notification title keyword that identifies advertisements.
- * 
- * @throws IllegalArgumentException if timing parameters are outside valid ranges.
- */
 data class AdSkipConfig(
     val forceStopDelayMs: Long = 1000L,
     val skipDelayMs: Long = 2000L,

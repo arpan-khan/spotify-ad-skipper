@@ -1,48 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Spotify Ad Skipper</string>
-    
-    <!-- Setup instructions -->
+    <string name="app_subtitle">Zero Interruption Listening</string>
+
+    <string name="hero_badge_active">SHIELD ACTIVE</string>
+    <string name="hero_badge_paused">PROTECTION PAUSED</string>
+    <string name="hero_badge_setup">SETUP REQUIRED</string>
+    <string name="hero_title_active">Ad Skipper is Active</string>
+    <string name="hero_desc_active">Audio ads will be muted and skipped in milliseconds.</string>
+    <string name="hero_title_paused">Ad Skipper is Paused</string>
+    <string name="hero_desc_paused">Enable the master toggle below to resume skipping.</string>
+    <string name="hero_title_setup">Setup Incomplete</string>
+    <string name="hero_desc_setup">Grant Notification Access and Shizuku below to activate skipping.</string>
+    <string name="hero_desc_active_battery_warn">Audio ads will be muted and skipped. Exclude battery optimization below for max reliability.</string>
+
+    <string name="section_engine">ENGINE CONTROLS</string>
+    <string name="section_permissions">REQUIRED PERMISSIONS</string>
+    <string name="engine_title">Ad Skipping Engine</string>
     <string name="setup_instructions">Complete the following steps to enable automatic ad skipping:</string>
-    
-    <!-- Permission labels -->
+
     <string name="notification_access_label">Notification Access</string>
-    <string name="shizuku_permission_label">Shizuku Permission</string>
+    <string name="shizuku_permission_label">Shizuku API Service</string>
     <string name="battery_optimization_label">Battery Optimization</string>
-    
-    <!-- Button text -->
+    <string name="ad_skipping_label">Ad Skipping</string>
+
+    <string name="notification_access_description">Reads Spotify media notifications to detect ads in real-time</string>
+    <string name="shizuku_permission_description">Allows instant background restart without needing root</string>
+    <string name="battery_optimization_description">Prevents Android from terminating the skipper service</string>
+
     <string name="grant_notification_access">Grant Notification Access</string>
     <string name="grant_shizuku_permission">Grant Shizuku Permission</string>
+    <string name="open_shizuku_app">Open Shizuku App</string>
+    <string name="install_shizuku_app">Install Shizuku App</string>
     <string name="disable_battery_optimization">Disable Battery Optimization</string>
     <string name="grant_permission">Grant Permission</string>
     <string name="open_settings">Open Settings</string>
     <string name="request_permission">Request Permission</string>
-    
-    <!-- Status messages -->
+
+    <string name="notification_channel_name">Ad Skipper Status</string>
+    <string name="notification_channel_desc">Shows ongoing active status of the ad skipper service</string>
+    <string name="notification_engine_on_title">Spotify Ad Skipper</string>
+    <string name="notification_engine_on_text">Ad skipper is turned on</string>
+
     <string name="status_granted">Granted</string>
     <string name="status_not_granted">Not Granted</string>
     <string name="status_required">Required</string>
+    <string name="status_unrestricted">Unrestricted</string>
     <string name="status_complete">All permissions granted! Ad skipping is active.</string>
     <string name="status_incomplete">Please grant all required permissions to enable ad skipping.</string>
     <string name="shizuku_status_checking">Checking Shizuku status…</string>
-    
-    <!-- Content descriptions for accessibility -->
+    <string name="service_status_active">Active — ads will be skipped automatically</string>
+    <string name="service_status_paused">Paused — toggle on to resume</string>
+    <string name="service_status_waiting_permissions">Waiting on the permissions above</string>
+
+    <string name="shizuku_not_installed">Shizuku is not installed. Tap below to install.</string>
+    <string name="shizuku_not_running">Shizuku is not running. Start it in Shizuku app.</string>
+    <string name="shizuku_running_not_granted">Shizuku is running. Tap to grant permission.</string>
+    <string name="shizuku_running_and_granted">Connected &amp; Authorized</string>
+
+    <string name="tip_title">How Stealth Skip Works</string>
+    <string name="tip_body">When an audio advertisement is detected from Spotify, the skipper mutes volume and restarts the playback session in &lt;250ms via Shizuku, seamlessly returning to your music without ads.</string>
+
     <string name="notification_status_icon">Notification access status icon</string>
     <string name="shizuku_status_icon">Shizuku permission status icon</string>
     <string name="battery_status_icon">Battery optimization status icon</string>
-    
-    <!-- Guidance messages -->
-    <string name="notification_access_description">Allow this app to read Spotify notifications to detect advertisements</string>
-    <string name="shizuku_permission_description">Grant Shizuku permission to enable reliable ad skipping</string>
-    <string name="battery_optimization_description">Disable battery optimization to keep the service running</string>
-    
-    <!-- Shizuku status messages -->
-    <string name="shizuku_not_installed">Shizuku app is not installed. Please install it first.</string>
-    <string name="shizuku_not_running">Shizuku service is not running. Please start Shizuku app.</string>
-    <string name="shizuku_running_not_granted">Shizuku is running. Please grant permission.</string>
-    <string name="shizuku_running_and_granted">Shizuku permission granted</string>
-    
-    <!-- Setup complete -->
+    <string name="service_status_icon">Ad skipping service status icon</string>
     <string name="setup_complete">All permissions granted! Ad skipping is now active.</string>
-    <string name="setup_incomplete">Please grant all required permissions to enable ad skipping.</string>
 </resources>

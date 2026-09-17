@@ -80,3 +80,7 @@ lint-results.xml
 *.hprof
 
 .kiro
+
+# Machine-specific Gradle config (local JDK path, local distribution URL)
+gradle.properties
+gradle/wrapper/gradle-wrapper.properties

@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="spotify_green">#1DB954</color>
+    <color name="spotify_green_bright">#1ED760</color>
+    <color name="spotify_green_dark">#14833B</color>
+    <color name="spotify_green_glow">#331ED760</color>
+    <color name="spotify_green_badge_bg">#183222</color>
+    <color name="spotify_green_badge_border">#255835</color>
+    <color name="spotify_green_icon_bg">#1A3825</color>
+
+    <color name="bg_dark">#121212</color>
+    <color name="bg_dark_elevated">#181818</color>
+    <color name="bg_card">#1E1E1E</color>
+    <color name="bg_card_highlight">#252525</color>
+    <color name="bg_card_border">#2C2C2C</color>
+
+    <color name="hero_grad_start">#173020</color>
+    <color name="hero_grad_end">#191919</color>
+    <color name="hero_border_active">#2D5A38</color>
+    <color name="hero_border_inactive">#333333</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3B3B3</color>
+    <color name="text_muted">#737373</color>
+    <color name="text_on_green">#000000</color>
+
+    <color name="status_granted">#1ED760</color>
+    <color name="status_warning">#FFA726</color>
+    <color name="status_warning_bg">#332514</color>
+    <color name="status_warning_border">#5C3D18</color>
+    <color name="status_error">#EF5350</color>
+    <color name="status_error_bg">#331818</color>
+    <color name="status_error_border">#5C2424</color>
+
     <color name="ic_launcher_background">#1DB954</color>
-    <color name="status_granted">#4CAF50</color>
-    <color name="status_not_granted">#F44336</color>
+    <color name="status_not_granted">#EF5350</color>
+    <color name="screen_background">#121212</color>
+    <color name="card_background">#1E1E1E</color>
 </resources>

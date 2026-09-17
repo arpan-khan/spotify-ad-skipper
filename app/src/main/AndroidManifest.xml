@@ -2,29 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Required permissions -->
-    <!-- Query Spotify package (Android 15 requirement for intent resolution) -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
-    <!-- Notification listener service permission -->
     <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
 
-    <!-- Shizuku API permission -->
     <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
 
-    <!-- Battery optimization exemption request -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light"
+        android:theme="@style/Theme.SpotifyAdSkipper"
         android:supportsRtl="true"
         tools:targetApi="35">
 
-        <!-- Main Activity - Permission setup UI -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -34,7 +30,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Notification Listener Service - Ad detection -->
         <service
             android:name=".SpotifyAdListener"
             android:exported="true"
@@ -44,7 +39,6 @@
             </intent-filter>
         </service>
 
-        <!-- Shizuku Provider -->
         <provider
             android:name="rikka.shizuku.ShizukuProvider"
             android:authorities="${applicationId}.shizuku"
