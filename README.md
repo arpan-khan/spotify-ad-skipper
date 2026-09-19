@@ -19,6 +19,11 @@
 - **Smarter Shizuku button** — now context-aware (Install / Open / Grant, depending on actual Shizuku state) instead of one static button.
 - **Original functionality** (grant notification access, grant Shizuku, battery optimization exemption) all preserved underneath the new visuals.
 
+#### Per-app exclusions & skip stats
+
+* Exclude specific apps so ads play normally in them instead of triggering skip — manage from a new screen with search, sorted with excluded apps on top.
+* Tracks total/today/this week ads skipped plus an estimated time saved, shown on the main screen.
+
 ---
 
 # Spotify Ad Skipper
