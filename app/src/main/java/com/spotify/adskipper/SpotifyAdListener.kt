@@ -102,13 +102,21 @@ class SpotifyAdListener : NotificationListenerService() {
 
         try {
 
-            val foregroundTaskId = when (val result = ShizukuController.getForegroundTaskId()) {
+            val foregroundTaskInfo = when (val result = ShizukuController.getForegroundTaskInfo()) {
                 is Result.Success -> result.value
                 is Result.Error -> {
                     Log.w(TAG, "Could not capture foreground task, focus will not be restored", result.exception)
                     null
                 }
             }
+
+            val foregroundPackageName = foregroundTaskInfo?.packageName
+            if (foregroundPackageName != null && ExclusionPreferences.isExcluded(applicationContext, foregroundPackageName)) {
+                Log.d(TAG, "Foreground app $foregroundPackageName is excluded, letting ad play normally")
+                return
+            }
+
+            val foregroundTaskId = foregroundTaskInfo?.taskId
 
             Log.d(TAG, "Waiting for Spotify to update queue state...")
             delay(3500)
@@ -145,6 +153,8 @@ class SpotifyAdListener : NotificationListenerService() {
                     is Result.Success -> Log.d(TAG, "Restored previous foreground app")
                 }
             }
+
+            AdSkipStats.recordSkip(applicationContext)
 
             Log.d(TAG, "Ad skip sequence complete")
         } finally {

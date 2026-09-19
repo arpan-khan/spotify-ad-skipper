@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,6 +71,10 @@ class MainActivity : AppCompatActivity() {
         findViewById<SwitchCompat>(R.id.switchAdSkipEnabled).setOnCheckedChangeListener { _, isChecked ->
             AdSkipPreferences.setServiceEnabled(this, isChecked)
             updateUIStatus()
+        }
+
+        findViewById<LinearLayout>(R.id.rowManageExclusions).setOnClickListener {
+            startActivity(Intent(this, ExclusionListActivity::class.java))
         }
 
         updateUIStatus()
@@ -271,6 +276,19 @@ class MainActivity : AppCompatActivity() {
         if (ivBattery != null) {
             ivBattery.setImageResource(if (batteryOptimized) R.drawable.ic_check else R.drawable.ic_cross)
         }
+
+        val excludedCount = ExclusionPreferences.getExcludedPackages(this).size
+        findViewById<TextView>(R.id.tvExclusionCount).text = when (excludedCount) {
+            0 -> getString(R.string.exclusion_none_active)
+            1 -> getString(R.string.exclusion_count_one)
+            else -> getString(R.string.exclusion_count_format, excludedCount)
+        }
+
+        findViewById<TextView>(R.id.tvStatTotal).text = AdSkipStats.getTotalSkips(this).toString()
+        findViewById<TextView>(R.id.tvStatToday).text = AdSkipStats.getSkipsToday(this).toString()
+        findViewById<TextView>(R.id.tvStatWeek).text = AdSkipStats.getSkipsThisWeek(this).toString()
+        findViewById<TextView>(R.id.tvStatTimeSaved).text =
+            getString(R.string.stats_time_saved_format, AdSkipStats.getFormattedTimeSaved(this))
     }
 
     fun requestNotificationAccess() {

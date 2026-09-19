@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/spotify_green_bright"
+        android:pathData="M4,4h6v6H4V4zM4,14h6v6H4v-6zM14,4h6v6h-6V4zM14,14h6v6h-6v-6z"/>
+</vector>

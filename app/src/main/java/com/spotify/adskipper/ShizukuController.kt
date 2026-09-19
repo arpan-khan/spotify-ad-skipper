@@ -207,7 +207,7 @@ object ShizukuController {
         }
     }
 
-    fun getForegroundTaskId(): Result<Int> {
+    fun getForegroundTaskInfo(): Result<ForegroundTaskInfo> {
         if (!isShizukuAvailable()) {
             return Result.Error(IllegalStateException("Shizuku service not available"))
         }
@@ -234,8 +234,9 @@ object ShizukuController {
                 ?: return Result.Error(IllegalStateException("No focused task info returned"))
 
             val taskId = focusedTaskInfo.taskId
-            Log.d(TAG, "Captured foreground task id: $taskId")
-            Result.Success(taskId)
+            val foregroundPackageName = focusedTaskInfo.topActivity?.packageName
+            Log.d(TAG, "Captured foreground task id: $taskId, package: $foregroundPackageName")
+            Result.Success(ForegroundTaskInfo(taskId, foregroundPackageName))
         } catch (e: SecurityException) {
             Log.e(TAG, "Security exception while capturing foreground task", e)
             Result.Error(e)

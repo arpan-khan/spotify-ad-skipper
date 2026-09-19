@@ -30,6 +30,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ExclusionListActivity"
+            android:exported="false" />
+
         <service
             android:name=".SpotifyAdListener"
             android:exported="true"

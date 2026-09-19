@@ -66,4 +66,20 @@
     <string name="battery_status_icon">Battery optimization status icon</string>
     <string name="service_status_icon">Ad skipping service status icon</string>
     <string name="setup_complete">All permissions granted! Ad skipping is now active.</string>
+
+    <string name="back">Back</string>
+
+    <string name="exclusion_manage_label">App Exclusions</string>
+    <string name="exclusion_none_active">No apps excluded</string>
+    <string name="exclusion_count_one">1 app excluded</string>
+    <string name="exclusion_count_format">%d apps excluded</string>
+    <string name="exclusion_list_title">Manage Exclusions</string>
+    <string name="exclusion_search_hint">Search apps</string>
+    <string name="exclusion_list_description">Ads will play normally in these apps instead of being skipped. Spotify itself can\'t be excluded, since ad detection relies on its notifications.</string>
+
+    <string name="stats_card_title">AD SKIP STATS</string>
+    <string name="stats_total_label">Total</string>
+    <string name="stats_today_label">Today</string>
+    <string name="stats_week_label">This Week</string>
+    <string name="stats_time_saved_format">%s saved (estimate)</string>
 </resources>
